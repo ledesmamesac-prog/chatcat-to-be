@@ -1,0 +1,258 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #ece5dd;
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.container {
+  display: flex;         /* activa flexbox */
+  flex-direction: row;   /* fuerza disposición en fila (uno al lado del otro) */
+  width: 90%;
+  height: 90vh;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* Panel Izquierdo: Mascota */
+.left-panel {
+  width: 30%;
+  height: 766.1px;
+  background: #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px;
+  border-right-width: 0px;   /* sin borde visible */
+  border-right-style: solid; /* mantiene la definición */
+}
+
+/* Imagen de la mascota */
+.mascot {
+  display: flex;
+  flex-direction: column;  /* apila imagen arriba y texto abajo */
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+/* Imagen con tamaño fijo */
+.mascot-image {
+  width: 150px;
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mascot-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* Texto debajo */
+.mascot-text {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 14px;
+}
+
+
+.reaction-buttons {
+  display: flex;
+  gap: 10px;
+  margin: 5px 0;
+}
+
+.reaction-buttons button {
+  background: #ededed;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  padding: 5px 12px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.reaction-buttons button:hover {
+  background: #34b7f1;
+  color: white;
+}
+
+/* Panel Chat */
+.right-panel {
+  width: 70%;
+  height: 766.1px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.chatbox {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  margin-bottom: 60px; /* deja espacio para que el input no tape mensajes */
+}
+
+.bot-message, .user-message {
+  max-width: 70%;
+  padding: 8px 12px;
+  margin: 5px 0;
+  border-radius: 10px;
+}
+
+.bot-message {
+  background: #dcf8c6;
+  align-self: flex-start;
+}
+
+.user-message {
+  background: #34b7f1;
+  color: white;
+  align-self: flex-end;
+}
+
+.input-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  border-top: 1px solid #ccc;
+  background: white; /* para que no se vea el fondo del chat debajo */
+  padding: 8px;
+}
+
+
+#userInput {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  outline: none;
+}
+
+#sendBtn {
+  background: #34b7f1;
+  border: none;
+  color: white;
+  padding: 0 20px;
+  margin-left: 10px;
+  border-radius: 20px;
+  cursor: pointer;
+}       
+
+/* Contenedor de botones */
+#reaction-tense, #reaction-type {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+/* Estilo base */
+#reaction-tense button,
+#reaction-type button {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 25px;       /* forma pill */
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+/* --- Botones de tiempo (Present/Past) --- */
+#reaction-tense button[data-tense="present"] {
+  background: #4CAF50;
+  color: white;
+}
+
+#reaction-tense button[data-tense="past"] {
+  background: #FF9800;
+  color: white;
+}
+
+/* --- Botones de tipo (Affirmative/Negative/Question) --- */
+#reaction-type button[data-type="affirmative"] {
+  background: #2196F3;
+  color: white;
+}
+
+#reaction-type button[data-type="negative"] {
+  background: #f44336;
+  color: white;
+}
+
+#reaction-type button[data-type="question"] {
+  background: #9C27B0;
+  color: white;
+}
+
+/* Efecto hover */
+#reaction-tense button:hover,
+#reaction-type button:hover {
+  opacity: 0.85;
+  transform: scale(1.05);
+}
+
+/* Efecto al hacer click */
+#reaction-tense button:active,
+#reaction-type button:active {
+  transform: scale(0.95);
+}
+
+/* Diseño responsive */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;  /* mascota arriba, chat abajo */
+    height: 100vh;
+  }
+
+  .left-panel {
+    width: 100%;
+    height: auto;
+    border-right: none;  /* quitamos la línea divisoria */
+    border-bottom: 2px solid #ddd;
+    padding: 10px;
+  }
+
+  .right-panel {
+    width: 100%;
+    flex: 1;
+  }
+
+  .mascot img {
+    width: 100px;   /* más pequeño en móvil */
+    height: 100px;
+  }
+
+  #userInput {
+    font-size: 16px;  /* tamaño cómodo para escribir en móvil */
+  }
+
+  #sendBtn {
+    padding: 0 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .mascot img {
+    width: 80px;
+    height: 80px;
+  }
+
+  #reaction-tense button,
+  #reaction-type button {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+}
