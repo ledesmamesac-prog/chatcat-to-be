@@ -214,7 +214,7 @@ body {
 @media (max-width: 768px) {
   .container {
     flex-direction: column;  /* mascota arriba, chat abajo */
-    height: 100vh;
+    height: 100dvh;
   }
 
   .left-panel {
