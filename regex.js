@@ -41,6 +41,7 @@ const regexPastAffirmative = new RegExp(`^${subjects} ${bePast} ${complement}\\.
 const regexPastNegative   = new RegExp(`^${subjects} ${bePastNeg} ${complement}\\.$`, "i");
 const regexPastQuestion   = new RegExp(`^${bePast} ${subjects} ${complement}\\?$`, "i");
 
+const nameRegex = /^[A-Z][a-z]{1,9}$/;
 
 export {
   regexPresentAffirmative,
@@ -48,5 +49,6 @@ export {
   regexPresentQuestion,
   regexPastAffirmative,
   regexPastNegative,
-  regexPastQuestion
+  regexPastQuestion,
+  nameRegex
 };

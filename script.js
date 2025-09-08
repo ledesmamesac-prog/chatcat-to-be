@@ -4,39 +4,19 @@ import {
   regexPresentQuestion,
   regexPastAffirmative,
   regexPastNegative,
-  regexPastQuestion
+  regexPastQuestion,
+  nameRegex
 } from './regex.js';
 
 const chatbox = document.getElementById("chatbox");
 const userInput = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
-const reactionTense = document.getElementById("reaction-tense");
-const reactionType = document.getElementById("reaction-type");
-const mascotText = document.getElementById("mascotText");
-const chatCat = document.getElementById("chatCat");
 
 let chosenTense = null;
 let chosenType = null;
 let userName = null;
 
-// Cambiar la expresión del gato
-function changeCat(expression) {
-  const expressions = {
-    happy: "./assets/cat_happy.png",
-    sad: "./assets/cat_sad.png",
-    thinking: "./assets/cat_thinking.png"
-  };
-  chatCat.src = expressions[expression];
-}
-
-// Al iniciar el chat pedimos el nombre
-window.addEventListener("DOMContentLoaded", () => {
-  mascotText.innerText = "👋 Hi! What's your name?";
-  userInput.disabled = false;
-  sendBtn.disabled = false;
-});
-
-// === Añadir mensajes al chat ===
+// Añadir mensajes al chat
 function addMessage(message, sender) {
   const msgDiv = document.createElement("div");
   msgDiv.classList.add(sender === "bot" ? "bot-message" : "user-message");
@@ -45,7 +25,39 @@ function addMessage(message, sender) {
   chatbox.scrollTop = chatbox.scrollHeight;
 }
 
-// === Validación con tus regex (sin cambios a regex.js) ===
+// === UTILIDAD ===
+function addBotMessageWithReactions(text, reactions, callback) {
+  const container = document.createElement("div");
+
+  const msgDiv = document.createElement("div");
+  msgDiv.classList.add("bot-message");
+  msgDiv.innerText = text;
+
+  const reactionsDiv = document.createElement("div");
+  reactionsDiv.classList.add("reactions");
+
+  reactions.forEach(r => {
+    const btn = document.createElement("button");
+    btn.innerText = `${r.emoji} ${r.label}`;
+    btn.classList.add(r.value);
+    btn.addEventListener("click", () => {
+      container.remove();       // quita mensaje + botones
+      callback(r.value);        // devuelve el valor elegido
+    });
+    reactionsDiv.appendChild(btn);
+  });
+
+  container.appendChild(msgDiv);
+  container.appendChild(reactionsDiv);
+
+  chatbox.appendChild(container);
+  chatbox.scrollTop = chatbox.scrollHeight;
+}
+
+
+
+
+// Validación según opciones
 function validateSentence(sentence) {
   if (chosenTense === "present") {
     if (chosenType === "affirmative" && regexPresentAffirmative.test(sentence)) return "✅ Correct present affirmative sentence.";
@@ -59,95 +71,111 @@ function validateSentence(sentence) {
   return "❌ Invalid sentence.";
 }
 
-// === Selección de tiempo ===
-reactionTense.addEventListener("click", (e) => {
-  if (e.target.tagName === "BUTTON") {
-    chosenTense = e.target.dataset.tense;
-    mascotText.innerText = `Great! You chose ${chosenTense.toUpperCase()}.\nNow select the type of sentence:`;
-    reactionTense.style.display = "none";
-    reactionType.style.display = "flex";
-  }
-});
-
-// === Selección de tipo ===
-reactionType.addEventListener("click", (e) => {
-  if (e.target.tagName === "BUTTON") {
-    chosenType = e.target.dataset.type;
-    mascotText.innerText = `Perfect! You chose ${chosenType.toUpperCase()}.\nNow write a ${chosenTense} ${chosenType} sentence in the chat.`;
-    reactionType.style.display = "none";
-    userInput.disabled = false;
-    sendBtn.disabled = false;
-  }
-});
-
-// === Envío de mensaje ===
+// Enviar mensaje
 function sendMessage() {
   const sentence = userInput.value.trim();
   if (!sentence) return;
 
   addMessage(sentence, "user");
 
-  // Si no tenemos nombre aún, lo pedimos primero
-  if (!userName) {
-    userName = sentence.charAt(0).toUpperCase() + sentence.slice(1);
-    addMessage(`Nice to meet you, ${userName}! 😃`, "bot");
-    mascotText.innerText = `${userName}, do you want to practice Present or Past sentences?`;
-    reactionTense.style.display = "flex";
-    userInput.disabled = true;
-    sendBtn.disabled = true;
-    userInput.value = "";
+  // Si aún no tenemos nombre → pedirlo primero
 
-    // Cambiar sprite a feliz al saludar
-    changeCat("happy");
-    return;
+  if (!userName) {
+    // Validar nombre con regex
+    if (!nameRegex.test(sentence)) {
+      addMessage("😾 That’s not a valid name! Try again.", "bot");
+      userInput.value = "";
+      return; // 👈 no sigue hasta que dé un nombre válido
+    }
+
+    // ✅ Nombre válido → normalizamos
+    userName = sentence.charAt(0).toUpperCase() + sentence.slice(1).toLowerCase();
+    addMessage(`Nice to meet you, ${userName}! 😃`, "bot");
+
+    // después de que el usuario escribe su nombre
+    addBotMessageWithReactions(
+      `${userName}, do you want to practice Present or Past sentences?`,
+      [
+        { label: "Present", value: "present", emoji: "🟢" },
+        { label: "Past", value: "past", emoji: "🔵" }
+      ],
+      (tense) => {
+        chosenTense = tense;
+
+        // Preguntar tipo
+        addBotMessageWithReactions(
+          `Great! You chose ${tense}. Now pick the type:`,
+          [
+            { label: "Affirmative", value: "affirmative", emoji: "✅" },
+            { label: "Negative", value: "negative", emoji: "❌" },
+            { label: "Question", value: "question", emoji: "❓" }
+          ],
+          (type) => {
+            chosenType = type;
+            addMessage(
+              `Perfect! Now write a ${tense} ${type} sentence in the chat.`,
+              "bot"
+            );
+            userInput.disabled = false;
+            sendBtn.disabled = false;
+          }
+        );
+      }
+    );
+
+    userInput.value = "";
+  return;
   }
 
-  // --- Flujo normal después de tener nombre ---
+
+  // --- Flujo normal (ya tenemos nombre, tense y type) ---
   let response = validateSentence(sentence);
 
   if (response.includes("❌")) {
     response = analyzeErrors(sentence);
   }
 
-  // ⬇️ Aquí decides la expresión del gato según la respuesta
-  if (response.includes("✅")) {
-    changeCat("happy");
-  } else if (response.includes("❌")) {
-    changeCat("sad");
-  } else {
-    changeCat("thinking");
-  }
-
-  // Personalizar respuesta con el nombre
   addMessage(`${userName}, ${response}`, "bot");
 
+  // Reiniciar flujo
   setTimeout(() => {
-    mascotText.innerText = `Do you want to try again, ${userName}? Choose Present or Past:`;
-    reactionTense.style.display = "flex";
-    chosenTense = null;
-    chosenType = null;
-    userInput.disabled = true;
-    sendBtn.disabled = true;
-
-    // Mientras espera al usuario → expresión "pensando"
-    changeCat("thinking");
+    addBotMessageWithReactions(
+      `Do you want to try again, ${userName}? Choose Present or Past:`,
+      [
+        { label: "Present", value: "present", emoji: "🟢" },
+        { label: "Past", value: "past", emoji: "🔵" }
+      ],
+      (tense) => {
+        chosenTense = tense;
+        addBotMessageWithReactions(
+          `Great! You chose ${tense}. Now pick the type:`,
+          [
+            { label: "Affirmative", value: "affirmative", emoji: "✅" },
+            { label: "Negative", value: "negative", emoji: "❌" },
+            { label: "Question", value: "question", emoji: "❓" }
+          ],
+          (type) => {
+            chosenType = type;
+            addMessage(
+              `Perfect! Now write a ${tense} ${type} sentence in the chat.`,
+              "bot"
+            );
+            userInput.disabled = false;
+            sendBtn.disabled = false;
+          }
+        );
+      }
+    );
   }, 2000);
 
   userInput.value = "";
 }
-
 
 sendBtn.addEventListener("click", sendMessage);
 userInput.addEventListener("keypress", (e) => {
   if (e.key === "Enter") sendMessage();
 });
 
-
-/* === analyzeErrors: detecta múltiples fallos y construye una sugerencia ===
-   Heurística práctica: intenta detectar mayúscula, puntuación, estructura (pregunta vs afirmación),
-   forma del verbo según sujeto y tiempo, presencia de "not" para negativos, existencia de complemento,
-   y validez del sujeto (según las reglas que usaste en regex: pronombres, The + noun, demostrativos, nombres propios).
-*/
 function analyzeErrors(sentence) {
   const errors = [];
   let corrected = sentence.trim();
@@ -360,3 +388,4 @@ function analyzeErrors(sentence) {
 
   return `❌ Errors found:\n- ${errors.join("\n- ")}\n👉 Suggestion: ${suggested}`;
 }
+
