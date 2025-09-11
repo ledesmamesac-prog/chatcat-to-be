@@ -8,14 +8,19 @@ body {
   align-items: center;
 }
 .container {
-  display: flex;         /* activa flexbox */
-  flex-direction: row;   /* fuerza disposición en fila (uno al lado del otro) */
+  display: flex;
+  flex-direction: row;
   width: 90%;
+  max-width: 900px;
   height: 90vh;
   background: white;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .reaction-buttons {
@@ -54,14 +59,13 @@ body {
   display: flex;
   flex-direction: column;
   background-image: url("./assets/Background.png");
-  background-size: cover;        /* ajusta para cubrir todo */
-  background-position: center;   /* centra la imagen */
-  background-repeat: no-repeat;  /* evita repetición */
-  margin-bottom: 60px;           /* espacio para el input fijo */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
-
-.bot-message, .user-message {
+.bot-message,
+.user-message {
   max-width: 70%;
   padding: 8px 12px;
   margin: 5px 0;
@@ -80,16 +84,13 @@ body {
 }
 
 .input-container {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
   display: flex;
   border-top: 1px solid #ccc;
-  background: white; /* para que no se vea el fondo del chat debajo */
+  background: white;
   padding: 8px;
+  position: sticky;
+  bottom: 0;
 }
-
 
 #userInput {
   flex: 1;
@@ -107,19 +108,13 @@ body {
   margin-left: 10px;
   border-radius: 20px;
   cursor: pointer;
-}       
-
+}
 
 /* === Responsive === */
 @media (max-width: 768px) {
   .container {
-    flex-direction: column;   /* Mascota arriba, chat abajo */
-    height: 100dvh;           /* usa viewport dinámico */
-  }
-
-  /* Quitamos panel izquierdo, todo ocupa ancho completo */
-  .left-panel {
-    display: none;
+    flex-direction: column;
+    height: 100dvh;
   }
 
   .right-panel {
@@ -129,19 +124,10 @@ body {
     flex-direction: column;
   }
 
-  /* Ajustar el área del chat */
   .chatbox {
     flex: 1;
     padding: 10px;
-    font-size: 14px;         /* un poco más compacto */
-  }
-
-  /* Mascota arriba del chat */
-  .mascot {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 10px 0;
+    font-size: 14px;
   }
 
   .mascot img {
@@ -164,19 +150,7 @@ body {
   .chatbox {
     font-size: 13px;
   }
-
-  .mascot img {
-    width: 80px;
-    height: 80px;
-  }
-
-  .reactions button {
-    padding: 6px 10px;
-    font-size: 12px;
-    border-radius: 15px;
-  }
 }
-
 
 .chat-header {
   display: flex;
@@ -210,12 +184,6 @@ body {
   color: green;
 }
 
-.chat-options .chat-avatar-small {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-}
-
 .reactions {
   display: flex;
   gap: 10px;
@@ -240,21 +208,21 @@ body {
 
 /* Colores específicos */
 .reactions button.present {
-  background: #0c750f;   /* verde */
+  background: #0c750f; /* verde */
 }
 
 .reactions button.past {
-  background: #135c97;   /* azul */
+  background: #135c97; /* azul */
 }
 
 .reactions button.affirmative {
-  background: #508118;   /* verde claro */
+  background: #508118; /* verde claro */
 }
 
 .reactions button.negative {
-  background: #aa1308;   /* rojo */
+  background: #aa1308; /* rojo */
 }
 
 .reactions button.question {
-  background: #da880e;   /* naranja/amarillo */
+  background: #da880e; /* naranja/amarillo */
 }

@@ -31,16 +31,17 @@ const complement = "([a-zA-Z]+( [a-zA-Z]+)*)"; // ej: happy, a good student
 
 // ====== ORACIONES ======
 
-// PRESENT
+// PRESENTE
 const regexPresentAffirmative = new RegExp(`^${subjects} ${bePresent} ${complement}\\.$`, "i");
 const regexPresentNegative   = new RegExp(`^${subjects} ${bePresentNeg} ${complement}\\.$`, "i");
 const regexPresentQuestion   = new RegExp(`^${bePresent} ${subjects} ${complement}\\?$`, "i");
 
-// PAST
+// PASADO
 const regexPastAffirmative = new RegExp(`^${subjects} ${bePast} ${complement}\\.$`, "i");
 const regexPastNegative   = new RegExp(`^${subjects} ${bePastNeg} ${complement}\\.$`, "i");
 const regexPastQuestion   = new RegExp(`^${bePast} ${subjects} ${complement}\\?$`, "i");
 
+// NOMBRE 
 const nameRegex = /^[A-Z][a-z]{1,9}$/;
 
 export {

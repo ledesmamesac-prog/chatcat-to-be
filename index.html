@@ -1,40 +1,39 @@
-
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chatbot TO BE Validator</title>
-  <link rel="stylesheet" href="style.css">
-  <script type="module" src="script.js"></script>
-</head>
-<body>
-  <div class="container">
-    <!-- Panel Derecho: Chat -->
-    <div class="right-panel">
-      <div class="chat-header">
-        <div class="chat-info">
-          <img src="./assets/cat_happy.png" alt="ChatCat" class="chat-avatar">
-          <div>
-            <div class="chat-name">ChatCat</div>
-            <div class="chat-status">online</div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chatbot TO BE Validator</title>
+    <link rel="icon" type="image/png" href="assets/icono.ico" />
+    <link rel="stylesheet" href="style.css" />
+    <script type="module" src="script.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="right-panel">
+        <div class="chat-header">
+          <div class="chat-info">
+            <img
+              src="./assets/cat_happy.png"
+              alt="ChatCat"
+              class="chat-avatar"
+            />
+            <div>
+              <div class="chat-name">ChatCat</div>
+              <div class="chat-status">🟢 online</div>
+            </div>
           </div>
         </div>
-      </div>
-
-      <div id="chatbox" class="chatbox">
-        <!-- Primer mensaje del bot con reacciones -->
-        <div class="bot-message" id="bot-welcome">
-          👋 Hi! What's your name?
+        <div id="chatbox" class="chatbox">
+          <div class="bot-message" id="bot-welcome">
+            👋 Hi! What's your name?
+          </div>
+        </div>
+        <div class="input-container">
+          <input type="text" id="userInput" placeholder="Write your name..." />
+          <button id="sendBtn">Send</button>
         </div>
       </div>
-
-      <div class="input-container">
-        <input type="text" id="userInput" placeholder="Write your name...">
-          <button id="sendBtn">Send</button>
-      </div>
     </div>
-  </div>
-</body>
-
+  </body>
 </html>

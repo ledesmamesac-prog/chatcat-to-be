@@ -5,8 +5,8 @@ import {
   regexPastAffirmative,
   regexPastNegative,
   regexPastQuestion,
-  nameRegex
-} from './regex.js';
+  nameRegex,
+} from "./regex.js";
 
 const chatbox = document.getElementById("chatbox");
 const userInput = document.getElementById("userInput");
@@ -36,13 +36,13 @@ function addBotMessageWithReactions(text, reactions, callback) {
   const reactionsDiv = document.createElement("div");
   reactionsDiv.classList.add("reactions");
 
-  reactions.forEach(r => {
+  reactions.forEach((r) => {
     const btn = document.createElement("button");
     btn.innerText = `${r.emoji} ${r.label}`;
     btn.classList.add(r.value);
     btn.addEventListener("click", () => {
-      container.remove();       // quita mensaje + botones
-      callback(r.value);        // devuelve el valor elegido
+      container.remove();
+      callback(r.value);
     });
     reactionsDiv.appendChild(btn);
   });
@@ -54,19 +54,22 @@ function addBotMessageWithReactions(text, reactions, callback) {
   chatbox.scrollTop = chatbox.scrollHeight;
 }
 
-
-
-
 // Validación según opciones
 function validateSentence(sentence) {
   if (chosenTense === "present") {
-    if (chosenType === "affirmative" && regexPresentAffirmative.test(sentence)) return "✅ Correct present affirmative sentence.";
-    if (chosenType === "negative" && regexPresentNegative.test(sentence)) return "✅ Correct present negative sentence.";
-    if (chosenType === "question" && regexPresentQuestion.test(sentence)) return "✅ Correct present question.";
+    if (chosenType === "affirmative" && regexPresentAffirmative.test(sentence))
+      return "✅ Correct present affirmative sentence.";
+    if (chosenType === "negative" && regexPresentNegative.test(sentence))
+      return "✅ Correct present negative sentence.";
+    if (chosenType === "question" && regexPresentQuestion.test(sentence))
+      return "✅ Correct present question.";
   } else if (chosenTense === "past") {
-    if (chosenType === "affirmative" && regexPastAffirmative.test(sentence)) return "✅ Correct past affirmative sentence.";
-    if (chosenType === "negative" && regexPastNegative.test(sentence)) return "✅ Correct past negative sentence.";
-    if (chosenType === "question" && regexPastQuestion.test(sentence)) return "✅ Correct past question.";
+    if (chosenType === "affirmative" && regexPastAffirmative.test(sentence))
+      return "✅ Correct past affirmative sentence.";
+    if (chosenType === "negative" && regexPastNegative.test(sentence))
+      return "✅ Correct past negative sentence.";
+    if (chosenType === "question" && regexPastQuestion.test(sentence))
+      return "✅ Correct past question.";
   }
   return "❌ Invalid sentence.";
 }
@@ -83,13 +86,17 @@ function sendMessage() {
   if (!userName) {
     // Validar nombre con regex
     if (!nameRegex.test(sentence)) {
-      addMessage("😾 That’s not a valid name! Try again.", "bot");
+      addMessage(
+        "😾 That's not a valid name. Please enter a name that begins with a capital letter.",
+        "bot"
+      );
       userInput.value = "";
       return; // 👈 no sigue hasta que dé un nombre válido
     }
 
     // ✅ Nombre válido → normalizamos
-    userName = sentence.charAt(0).toUpperCase() + sentence.slice(1).toLowerCase();
+    userName =
+      sentence.charAt(0).toUpperCase() + sentence.slice(1).toLowerCase();
     addMessage(`Nice to meet you, ${userName}! 😃`, "bot");
 
     // después de que el usuario escribe su nombre
@@ -97,7 +104,7 @@ function sendMessage() {
       `${userName}, do you want to practice Present or Past sentences?`,
       [
         { label: "Present", value: "present", emoji: "🟢" },
-        { label: "Past", value: "past", emoji: "🔵" }
+        { label: "Past", value: "past", emoji: "🔵" },
       ],
       (tense) => {
         chosenTense = tense;
@@ -108,7 +115,7 @@ function sendMessage() {
           [
             { label: "Affirmative", value: "affirmative", emoji: "✅" },
             { label: "Negative", value: "negative", emoji: "❌" },
-            { label: "Question", value: "question", emoji: "❓" }
+            { label: "Question", value: "question", emoji: "❓" },
           ],
           (type) => {
             chosenType = type;
@@ -124,9 +131,8 @@ function sendMessage() {
     );
 
     userInput.value = "";
-  return;
+    return;
   }
-
 
   // --- Flujo normal (ya tenemos nombre, tense y type) ---
   let response = validateSentence(sentence);
@@ -143,7 +149,7 @@ function sendMessage() {
       `Do you want to try again, ${userName}? Choose Present or Past:`,
       [
         { label: "Present", value: "present", emoji: "🟢" },
-        { label: "Past", value: "past", emoji: "🔵" }
+        { label: "Past", value: "past", emoji: "🔵" },
       ],
       (tense) => {
         chosenTense = tense;
@@ -152,7 +158,7 @@ function sendMessage() {
           [
             { label: "Affirmative", value: "affirmative", emoji: "✅" },
             { label: "Negative", value: "negative", emoji: "❌" },
-            { label: "Question", value: "question", emoji: "❓" }
+            { label: "Question", value: "question", emoji: "❓" },
           ],
           (type) => {
             chosenType = type;
@@ -200,7 +206,9 @@ function analyzeErrors(sentence) {
     }
   } else {
     if (!endsPeriod) {
-      errors.push("An affirmative/negative sentence must end with a period (.).");
+      errors.push(
+        "An affirmative/negative sentence must end with a period (.)."
+      );
       corrected = corrected.replace(/[?.]?$/, ".");
     }
   }
@@ -225,7 +233,12 @@ function analyzeErrors(sentence) {
       // estructura pregunta real
       verbToken = tokens[0];
       // sujeto: si hay determinante como "the/a/an/this/that/these/those", incluir siguiente palabra
-      if (tokens.length >= 3 && ["the", "a", "an", "this", "that", "these", "those"].includes(tokens[1].toLowerCase())) {
+      if (
+        tokens.length >= 3 &&
+        ["the", "a", "an", "this", "that", "these", "those"].includes(
+          tokens[1].toLowerCase()
+        )
+      ) {
         subjectPhrase = tokens.slice(1, 3).join(" ");
         complementTokens = tokens.slice(3);
       } else {
@@ -234,7 +247,9 @@ function analyzeErrors(sentence) {
       }
     } else {
       // El usuario escribió una afirmación pero eligió "question" — intentamos inferir sujeto/verb
-      const verbIndex = tokens.findIndex(t => beList.includes(t.toLowerCase()));
+      const verbIndex = tokens.findIndex((t) =>
+        beList.includes(t.toLowerCase())
+      );
       if (verbIndex >= 0) {
         subjectPhrase = tokens.slice(0, verbIndex).join(" ");
         verbToken = tokens[verbIndex];
@@ -248,19 +263,31 @@ function analyzeErrors(sentence) {
     }
   } else {
     // chosenType es affirmative o negative -> esperamos: Subject Verb Complement
-    const verbIndex = tokens.findIndex(t => beList.includes(t.toLowerCase()));
+    const verbIndex = tokens.findIndex((t) => beList.includes(t.toLowerCase()));
     if (verbIndex >= 0) {
       subjectPhrase = tokens.slice(0, verbIndex).join(" ");
       // incluir "not" si está justo después del verbo en el token original
-      verbToken = tokens[verbIndex] + (tokens[verbIndex + 1] && tokens[verbIndex + 1].toLowerCase() === "not" ? " not" : "");
-      const startComp = tokens[verbIndex + 1] && tokens[verbIndex + 1].toLowerCase() === "not" ? verbIndex + 2 : verbIndex + 1;
+      verbToken =
+        tokens[verbIndex] +
+        (tokens[verbIndex + 1] && tokens[verbIndex + 1].toLowerCase() === "not"
+          ? " not"
+          : "");
+      const startComp =
+        tokens[verbIndex + 1] && tokens[verbIndex + 1].toLowerCase() === "not"
+          ? verbIndex + 2
+          : verbIndex + 1;
       complementTokens = tokens.slice(startComp);
     } else {
       // no encontramos verbo -> posible estructura pregunta con verb al inicio
       if (beList.includes(firstLower)) {
         // ejemplo: "Is the car happy" (pregunta escrita aunque chosenType no es question)
         verbToken = tokens[0];
-        if (tokens.length >= 3 && ["the", "a", "an", "this", "that", "these", "those"].includes(tokens[1].toLowerCase())) {
+        if (
+          tokens.length >= 3 &&
+          ["the", "a", "an", "this", "that", "these", "those"].includes(
+            tokens[1].toLowerCase()
+          )
+        ) {
           subjectPhrase = tokens.slice(1, 3).join(" ");
           complementTokens = tokens.slice(3);
         } else {
@@ -277,24 +304,46 @@ function analyzeErrors(sentence) {
   }
 
   // Helpers para decisión de verbo esperado según sujeto y tense
-  const pronouns = ["I","You","He","She","It","We","They"];
+  const pronouns = ["I", "You", "He", "She", "It", "We", "They"];
   const subjFirstWord = subjectPhrase.split(" ")[0] || "";
   const subjFirstLower = subjFirstWord.toLowerCase();
 
   // decidir verbo esperado
   let expectedVerb = "";
-  if (pronouns.map(p => p.toLowerCase()).includes(subjFirstLower)) {
+  if (pronouns.map((p) => p.toLowerCase()).includes(subjFirstLower)) {
     // map pronombres
-    const subjCapital = subjFirstWord[0] ? subjFirstWord[0].toUpperCase() + subjFirstWord.slice(1).toLowerCase() : subjFirstWord;
-    const presentMap = { I: "am", You: "are", He: "is", She: "is", It: "is", We: "are", They: "are" };
-    const pastMap =    { I: "was", You: "were", He: "was", She: "was", It: "was", We: "were", They: "were" };
-    expectedVerb = chosenTense === "present" ? (presentMap[subjCapital] || "is") : (pastMap[subjCapital] || "was");
+    const subjCapital = subjFirstWord[0]
+      ? subjFirstWord[0].toUpperCase() + subjFirstWord.slice(1).toLowerCase()
+      : subjFirstWord;
+    const presentMap = {
+      I: "am",
+      You: "are",
+      He: "is",
+      She: "is",
+      It: "is",
+      We: "are",
+      They: "are",
+    };
+    const pastMap = {
+      I: "was",
+      You: "were",
+      He: "was",
+      She: "was",
+      It: "was",
+      We: "were",
+      They: "were",
+    };
+    expectedVerb =
+      chosenTense === "present"
+        ? presentMap[subjCapital] || "is"
+        : pastMap[subjCapital] || "was";
   } else {
     // si sujeto empieza por demostrativo plural o el sustantivo final acaba en 's' -> plural heurístico
     const firstLower = subjFirstWord.toLowerCase();
     const lastWord = subjectPhrase.split(" ").slice(-1)[0] || "";
-    const isPluralDemo = ["these","those"].includes(firstLower);
-    const isPluralNoun = lastWord.toLowerCase().endsWith("s") && lastWord.length > 1;
+    const isPluralDemo = ["these", "those"].includes(firstLower);
+    const isPluralNoun =
+      lastWord.toLowerCase().endsWith("s") && lastWord.length > 1;
     if (isPluralDemo || isPluralNoun) {
       expectedVerb = chosenTense === "present" ? "are" : "were";
     } else {
@@ -306,8 +355,15 @@ function analyzeErrors(sentence) {
 
   // 5.a Verbo presente en la frase (sin "not")
   const verbWithoutNot = (verbToken || "").split(" ")[0] || "";
-  if (verbWithoutNot && verbWithoutNot.toLowerCase() !== expectedVerb.toLowerCase()) {
-    errors.push(`Wrong verb form: expected "${expectedVerb}" for subject "${subjectPhrase.split(" ")[0] || subjectPhrase}".`);
+  if (
+    verbWithoutNot &&
+    verbWithoutNot.toLowerCase() !== expectedVerb.toLowerCase()
+  ) {
+    errors.push(
+      `Wrong verb form: expected "${expectedVerb}" for subject "${
+        subjectPhrase.split(" ")[0] || subjectPhrase
+      }".`
+    );
   }
 
   // 5.b Si es negativo -> presencia de "not"
@@ -315,21 +371,25 @@ function analyzeErrors(sentence) {
     // detectar si la frase tiene 'not' junto al verbo o en tokens posteriores
     const hasNot = /\bnot\b/i.test(sentence);
     if (!hasNot) {
-      errors.push('Negative sentence must contain "not" after the verb (e.g., "is not").');
+      errors.push(
+        'Negative sentence must contain "not" after the verb (e.g., "is not").'
+      );
     }
   }
 
   // 5.c Existe complemento?
   if (!complementTokens || complementTokens.length === 0) {
-    errors.push("Sentence should include a complement (e.g., 'happy', 'a teacher', 'from Cartagena').");
+    errors.push(
+      "Sentence should include a complement (e.g., 'happy', 'a teacher', 'from Cartagena')."
+    );
   }
 
-    // 5.d Sujeto válido (según reglas mejoradas)
+  // 5.d Sujeto válido (según reglas mejoradas)
   const subjTrim = subjectPhrase.trim();
 
   // Listas aceptadas
-  const validPronouns = ["I","You","He","She","It","We","They"];
-  const validDeterminers = ["The","This","That","These","Those","A","An"];
+  const validPronouns = ["I", "You", "He", "She", "It", "We", "They"];
+  const validDeterminers = ["The", "This", "That", "These", "Those", "A", "An"];
 
   // Tokenizar el sujeto
   const subjParts = subjTrim.split(" ");
@@ -345,7 +405,9 @@ function analyzeErrors(sentence) {
   // Caso 2: determinante + sustantivo (acepta plurales y adjetivos intermedios)
   else if (validDeterminers.includes(firstWord) && subjParts.length > 1) {
     // Ejemplo válido: "The car", "The boys", "Those smart students"
-    isValidSubject = /^[A-Za-z]+( [A-Za-z]+)*$/.test(subjParts.slice(1).join(" "));
+    isValidSubject = /^[A-Za-z]+( [A-Za-z]+)*$/.test(
+      subjParts.slice(1).join(" ")
+    );
   }
 
   // Caso 3: nombre propio (única palabra con mayúscula inicial, ej: "Diego")
@@ -354,31 +416,36 @@ function analyzeErrors(sentence) {
   }
 
   if (!isValidSubject) {
-    errors.push(`Subject "${subjTrim}" may be invalid. Use pronouns, "The + noun", demonstratives, or proper names.`);
+    errors.push(
+      `Subject "${subjTrim}" may be invalid. Use pronouns, "The + noun", demonstratives, or proper names.`
+    );
   }
 
-
   // 6) Construir sugerencia corregida (aplica todas las correcciones detectadas)
-  const capitalize = s => s.charAt(0).toUpperCase() + s.slice(1);
+  const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
   const subjectForCorr = subjTrim ? capitalize(subjTrim) : "";
-  const complementForCorr = (complementTokens || []).join(" ").trim() || "something";
+  const complementForCorr =
+    (complementTokens || []).join(" ").trim() || "something";
 
   let suggested = "";
   if (chosenType === "question") {
     // pregunta: Verb Subject Complement?
-    const verbCap = expectedVerb.charAt(0).toUpperCase() + expectedVerb.slice(1);
+    const verbCap =
+      expectedVerb.charAt(0).toUpperCase() + expectedVerb.slice(1);
     suggested = `${verbCap} ${subjTrim} ${complementForCorr}`.trim() + "?";
   } else if (chosenType === "negative") {
     // negativo: Subject expectedVerb not Complement.
     // cuidado con "I am not" vs "He is not"
-    suggested = `${subjectForCorr} ${expectedVerb} not ${complementForCorr}`.trim() + ".";
+    suggested =
+      `${subjectForCorr} ${expectedVerb} not ${complementForCorr}`.trim() + ".";
   } else {
     // afirmativo: Subject expectedVerb Complement.
-    suggested = `${subjectForCorr} ${expectedVerb} ${complementForCorr}`.trim() + ".";
+    suggested =
+      `${subjectForCorr} ${expectedVerb} ${complementForCorr}`.trim() + ".";
   }
 
   // limpiar espacios dobles
-  suggested = suggested.replace(/\s+/g, ' ');
+  suggested = suggested.replace(/\s+/g, " ");
 
   // 7) Resultado final: lista de errores + sugerencia
   if (errors.length === 0) {
@@ -386,6 +453,7 @@ function analyzeErrors(sentence) {
     return `❌ Invalid sentence according to the rules. Suggested: ${suggested}`;
   }
 
-  return `❌ Errors found:\n- ${errors.join("\n- ")}\n👉 Suggestion: ${suggested}`;
+  return `❌ Errors found:\n- ${errors.join(
+    "\n- "
+  )}\n👉 Suggestion: ${suggested}`;
 }
-
