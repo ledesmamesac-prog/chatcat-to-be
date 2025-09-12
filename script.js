@@ -54,25 +54,6 @@ function addBotMessageWithReactions(text, reactions, callback) {
   chatbox.scrollTop = chatbox.scrollHeight;
 }
 
-// Validación según opciones
-function validateSentence(sentence) {
-  if (chosenTense === "present") {
-    if (chosenType === "affirmative" && regexPresentAffirmative.test(sentence))
-      return "✅ Correct present affirmative sentence.";
-    if (chosenType === "negative" && regexPresentNegative.test(sentence))
-      return "✅ Correct present negative sentence.";
-    if (chosenType === "question" && regexPresentQuestion.test(sentence))
-      return "✅ Correct present question.";
-  } else if (chosenTense === "past") {
-    if (chosenType === "affirmative" && regexPastAffirmative.test(sentence))
-      return "✅ Correct past affirmative sentence.";
-    if (chosenType === "negative" && regexPastNegative.test(sentence))
-      return "✅ Correct past negative sentence.";
-    if (chosenType === "question" && regexPastQuestion.test(sentence))
-      return "✅ Correct past question.";
-  }
-  return "❌ Invalid sentence.";
-}
 
 // Enviar mensaje
 function sendMessage() {
@@ -80,7 +61,6 @@ function sendMessage() {
   if (!sentence) return;
 
   addMessage(sentence, "user");
-
   // Si aún no tenemos nombre → pedirlo primero
 
   if (!userName) {
@@ -133,15 +113,9 @@ function sendMessage() {
     userInput.value = "";
     return;
   }
-
+  const feedback = analyzeErrors(sentence);   // <--- importante
+  addMessage(feedback, "bot"); 
   // --- Flujo normal (ya tenemos nombre, tense y type) ---
-  let response = validateSentence(sentence);
-
-  if (response.includes("❌")) {
-    response = analyzeErrors(sentence);
-  }
-
-  addMessage(`${userName}, ${response}`, "bot");
 
   // Reiniciar flujo
   setTimeout(() => {
