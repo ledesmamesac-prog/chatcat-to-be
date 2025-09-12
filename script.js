@@ -15,6 +15,7 @@ const sendBtn = document.getElementById("sendBtn");
 let chosenTense = null;
 let chosenType = null;
 let userName = null;
+let awaitingSentence = false;
 
 // Añadir mensajes al chat
 function addMessage(message, sender) {
@@ -59,10 +60,8 @@ function addBotMessageWithReactions(text, reactions, callback) {
 function sendMessage() {
   const sentence = userInput.value.trim();
   if (!sentence) return;
-
   addMessage(sentence, "user");
   // Si aún no tenemos nombre → pedirlo primero
-
   if (!userName) {
     // Validar nombre con regex
     if (!nameRegex.test(sentence)) {
@@ -78,6 +77,8 @@ function sendMessage() {
     userName =
       sentence.charAt(0).toUpperCase() + sentence.slice(1).toLowerCase();
     addMessage(`Nice to meet you, ${userName}! 😃`, "bot");
+    userInput.disabled = true;
+    sendBtn.disabled = true;
 
     // después de que el usuario escribe su nombre
     addBotMessageWithReactions(
@@ -113,12 +114,12 @@ function sendMessage() {
     userInput.value = "";
     return;
   }
-  const feedback = analyzeErrors(sentence);   // <--- importante
+  const feedback = analyzeErrors(sentence);   
   addMessage(feedback, "bot"); 
-  // --- Flujo normal (ya tenemos nombre, tense y type) ---
-
   // Reiniciar flujo
   setTimeout(() => {
+    userInput.disabled = true;
+    sendBtn.disabled = true;
     addBotMessageWithReactions(
       `Do you want to try again, ${userName}? Choose Present or Past:`,
       [
