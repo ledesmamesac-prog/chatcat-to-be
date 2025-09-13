@@ -15,7 +15,6 @@ const sendBtn = document.getElementById("sendBtn");
 let chosenTense = null;
 let chosenType = null;
 let userName = null;
-let awaitingSentence = false;
 
 // Añadir mensajes al chat
 function addMessage(message, sender) {
@@ -53,6 +52,24 @@ function addBotMessageWithReactions(text, reactions, callback) {
 
   chatbox.appendChild(container);
   chatbox.scrollTop = chatbox.scrollHeight;
+}
+function validateSentence(sentence) {
+  if (chosenTense === "present") {
+    if (chosenType === "affirmative" && regexPresentAffirmative.test(sentence))
+      return "✅ correct present affirmative sentence.";
+    if (chosenType === "negative" && regexPresentNegative.test(sentence))
+      return "✅ correct present negative sentence.";
+    if (chosenType === "question" && regexPresentQuestion.test(sentence))
+      return "✅ correct present question sentence.";
+  } else if (chosenTense === "past") {
+    if (chosenType === "affirmative" && regexPastAffirmative.test(sentence))
+      return "✅ correct past affirmative sentence.";
+    if (chosenType === "negative" && regexPastNegative.test(sentence))
+      return "✅ correct past negative sentence.";
+    if (chosenType === "question" && regexPastQuestion.test(sentence))
+      return "✅ correct past question sentence.";
+  }
+  return "❌ invalid sentence.";
 }
 
 
@@ -158,6 +175,7 @@ userInput.addEventListener("keypress", (e) => {
 });
 
 function analyzeErrors(sentence) {
+  console.log(sentence)
   const errors = [];
   let corrected = sentence.trim();
 
@@ -422,10 +440,21 @@ function analyzeErrors(sentence) {
   // limpiar espacios dobles
   suggested = suggested.replace(/\s+/g, " ");
 
-  // 7) Resultado final: lista de errores + sugerencia
-  if (errors.length === 0) {
-    // Raro: no hay errores pero la regex no validó. Aún así devolvemos una sugerencia.
-    return `❌ Invalid sentence according to the rules. Suggested: ${suggested}`;
+  // 7) Resultado final
+  if (errors.length > 0) {
+    return `❌ Errors found:\n- ${errors.join("\n- ")}\n👉 Suggestion: ${suggested}`;
+  }
+
+  // Si no hay errores → validamos con regex
+  const validated = validateSentence(corrected);
+  if (!validated.startsWith("❌")) {
+    return validated; 
+  }
+
+  // Si la versión corregida no pasa regex, probamos la sugerida
+  const validatedSuggested = validateSentence(suggested);
+  if (!validatedSuggested.startsWith("❌")) {
+    return validatedSuggested;
   }
 
   return `❌ Errors found:\n- ${errors.join(
