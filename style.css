@@ -2,16 +2,19 @@ body {
   font-family: Arial, sans-serif;
   background: #ece5dd;
   margin: 0;
-  height: 100vh;
+  min-height: 100vh;
+  width: 100vw;
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: auto;
 }
 .container {
   display: flex;
   flex-direction: row;
-  width: 90%;
+  width: 100%;
   max-width: 900px;
+  min-height: 400px;
   height: 90vh;
   background: white;
   border-radius: 10px;
@@ -46,14 +49,17 @@ body {
 /* Panel Chat */
 .right-panel {
   width: 100%;
-  height: 766.1px;
+  height: 100%;
   display: flex;
   flex-direction: column;
   position: relative;
+  min-height: 0;
+  flex: 1 1 0;
 }
 
 .chatbox {
-  flex: 1;
+  flex: 1 1 0;
+  min-height: 0;
   padding: 10px;
   overflow-y: auto;
   display: flex;
@@ -62,14 +68,17 @@ body {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  font-size: clamp(14px, 2vw, 18px);
+  word-break: break-word;
 }
 
 .bot-message,
 .user-message {
-  max-width: 70%;
+  max-width: 90%;
   padding: 8px 12px;
   margin: 5px 0;
   border-radius: 10px;
+  word-break: break-word;
 }
 
 .bot-message {
@@ -98,6 +107,7 @@ body {
   border: 1px solid #ddd;
   border-radius: 20px;
   outline: none;
+  font-size: 20px; 
 }
 
 #sendBtn {
@@ -111,10 +121,30 @@ body {
 }
 
 /* === Responsive === */
+@media (max-width: 900px) {
+  .container {
+    width: 100vw;
+    max-width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+    position: static;
+    top: 0;
+    left: 0;
+    transform: none;
+  }
+}
+
 @media (max-width: 768px) {
   .container {
     flex-direction: column;
-    height: 100dvh;
+    height: 100vh;
+    width: 100vw;
+    max-width: 100vw;
+    border-radius: 0;
+    position: static;
+    top: 0;
+    left: 0;
+    transform: none;
   }
 
   .right-panel {
@@ -122,33 +152,20 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
+    min-height: 0;
   }
 
   .chatbox {
-    flex: 1;
+    flex: 1 1 0;
+    min-height: 0;
     padding: 10px;
-    font-size: 14px;
-  }
-
-  .mascot img {
-    width: 100px;
-    height: 100px;
-  }
-
-  #userInput {
-    font-size: 16px;
-    padding: 10px;
-  }
-
-  #sendBtn {
-    padding: 0 15px;
-    font-size: 16px;
+    font-size: clamp(13px, 3vw, 16px);
   }
 }
 
 @media (max-width: 480px) {
   .chatbox {
-    font-size: 13px;
+    font-size: clamp(12px, 4vw, 15px);
   }
 }
 
@@ -206,23 +223,23 @@ body {
   transform: scale(1.1);
 }
 
-/* Colores específicos */
+
 .reactions button.present {
-  background: #0c750f; /* verde */
+  background: #0c750f; 
 }
 
 .reactions button.past {
-  background: #135c97; /* azul */
+  background: #135c97; 
 }
 
 .reactions button.affirmative {
-  background: #508118; /* verde claro */
+  background: #508118; 
 }
 
 .reactions button.negative {
-  background: #aa1308; /* rojo */
+  background: #aa1308; 
 }
 
 .reactions button.question {
-  background: #da880e; /* naranja/amarillo */
+  background: #da880e; 
 }
